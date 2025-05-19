@@ -1,0 +1,10 @@
+Step,Direction,Altitude,Flaps,Gear,Speed,Notes
+Kiss Off,Away from carrier,800-1200,AUTO,UP,250-300,"Departing the holding pattern, setting up for the downwind leg."
+Downwind Leg,Parallel to carrier (approx. 279 magnetic),800,AUTO,UP,250,"Flying parallel to the BRC (Base Recovery Course), approximately 6-8 nautical miles abeam."
+Abeam/Report,Perpendicular to carrier (approx. 369 magnetic),800,HALF,DOWN,250,"Beginning the ""Case I"" approach checklist, reporting ""Abeam and Paddles"" (if required)."
+Initial Turn,Towards the BRC (left turn),800,HALF,DOWN,250,Initiating a descending turn to intercept the extended centerline. Aim for about 30 degrees of bank.
+Base Leg,Perpendicular to BRC (approx. 189 magnetic),600,FULL,DOWN,180-200,"Established on the base leg, configuring for landing. Aim for a stable descent."
+Final Turn,Towards the carrier (left turn),400-600,FULL,DOWN,180-200,"Rolling out on the extended centerline, aligning with the landing deck. Adjust bank to maintain centerline."
+The Groove,Towards the carrier (009 magnetic),200-400,FULL,DOWN,On-Speed AoA,"Fine-tuning altitude and lateral alignment using the IFLOLS (Improved Fresnel Lens Optical Landing System). ""Fly the ball."""
+Ramp Strike,On the carrier,0,FULL,DOWN,On-Speed AoA,(Undesirable) Occurs if the aircraft impacts the ramp before the wires.
+Touchdown,On the carrier,0,FULL,DOWN,On-Speed AoA,Hook should engage one of the arresting wires.

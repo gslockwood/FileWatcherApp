@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CustomListBox.resx1111" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DCSDebriefFile\DCSDebriefFile.csproj" />
+    <ProjectReference Include="..\FileWatcher\FileWatcher.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo &quot;$(ConfigurationName)&quot;&#xD;&#xA;&#xD;&#xA;if &quot;$(ConfigurationName)&quot; == &quot;Debug&quot; (goto done)&#xD;&#xA;&#xD;&#xA;set destination=&quot;%25GreenFlashSoftware%25\DCSDebriefing\&quot;&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)*.dll&quot; %25destination%25 /s /i /y&#xD;&#xA;IF %25ERRORLEVEL%25 EQU 0 (Echo No error found) ELSE (goto errors)&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)*.exe&quot; %25destination%25 /s /i /y&#xD;&#xA;IF %25ERRORLEVEL%25 EQU 0 (Echo No error found) ELSE (goto errors)&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;rem xcopy &quot;$(TargetDir)nlog.config&quot; %25destination%25 /s /i /y&#xD;&#xA;IF %25ERRORLEVEL%25 EQU 0 (Echo No error found) ELSE (goto errors)&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)*.runtimeconfig.json&quot; %25destination%25 /s /i /y&#xD;&#xA;IF %25ERRORLEVEL%25 EQU 0 (Echo No error found) ELSE (goto errors)&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;echo Built: %25date%25:%25time%25&#xD;&#xA;goto done&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;:errors&#xD;&#xA;echo FAILED&#xD;&#xA;&#xD;&#xA;:done&#xD;&#xA;" />
+  </Target>
+
+</Project>
