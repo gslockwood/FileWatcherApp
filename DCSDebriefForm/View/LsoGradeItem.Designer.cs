@@ -34,14 +34,16 @@ namespace DCSDebriefForm
             labelGrade = new Label();
             labelLsoGrade = new Label();
             tableLayoutPanel = new TableLayoutPanel();
+            labelWire = new Label();
+            labelUnitType = new Label();
+            labelCarrier = new Label();
+            labelPilot = new Label();
             labelDateTime = new Label();
             listView = new ResizableListView();
             columnHeaderError = new ColumnHeader();
             columnHeaderTranslation = new ColumnHeader();
             labelGradeTranslation = new Label();
             tableLayoutPanelMain = new TableLayoutPanel();
-            labelPilot = new Label();
-            labelCarrier = new Label();
             tableLayoutPanel.SuspendLayout();
             tableLayoutPanelMain.SuspendLayout();
             SuspendLayout();
@@ -49,7 +51,7 @@ namespace DCSDebriefForm
             // panelGradeIndicator
             // 
             panelGradeIndicator.BackColor = Color.Red;
-            panelGradeIndicator.Location = new Point(544, 21);
+            panelGradeIndicator.Location = new Point(850, 21);
             panelGradeIndicator.Margin = new Padding(20);
             panelGradeIndicator.Name = "panelGradeIndicator";
             panelGradeIndicator.Size = new Size(16, 16);
@@ -59,7 +61,7 @@ namespace DCSDebriefForm
             // 
             labelGrade.Dock = DockStyle.Fill;
             labelGrade.ForeColor = Color.Black;
-            labelGrade.Location = new Point(588, 1);
+            labelGrade.Location = new Point(894, 1);
             labelGrade.Name = "labelGrade";
             labelGrade.Size = new Size(194, 61);
             labelGrade.TabIndex = 0;
@@ -70,7 +72,7 @@ namespace DCSDebriefForm
             // 
             labelLsoGrade.Dock = DockStyle.Fill;
             labelLsoGrade.ForeColor = Color.Black;
-            labelLsoGrade.Location = new Point(789, 1);
+            labelLsoGrade.Location = new Point(1176, 1);
             labelLsoGrade.Name = "labelLsoGrade";
             labelLsoGrade.Size = new Size(785, 61);
             labelLsoGrade.TabIndex = 0;
@@ -80,19 +82,23 @@ namespace DCSDebriefForm
             // tableLayoutPanel
             // 
             tableLayoutPanel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-            tableLayoutPanel.ColumnCount = 6;
-            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+            tableLayoutPanel.ColumnCount = 8;
+            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 175F));
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 250F));
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel.Controls.Add(labelCarrier, 2, 0);
+            tableLayoutPanel.Controls.Add(labelWire, 6, 0);
+            tableLayoutPanel.Controls.Add(labelUnitType, 2, 0);
+            tableLayoutPanel.Controls.Add(labelCarrier, 3, 0);
             tableLayoutPanel.Controls.Add(labelPilot, 1, 0);
-            tableLayoutPanel.Controls.Add(panelGradeIndicator, 3, 0);
+            tableLayoutPanel.Controls.Add(panelGradeIndicator, 4, 0);
             tableLayoutPanel.Controls.Add(labelDateTime, 0, 0);
-            tableLayoutPanel.Controls.Add(labelLsoGrade, 5, 0);
-            tableLayoutPanel.Controls.Add(labelGrade, 4, 0);
+            tableLayoutPanel.Controls.Add(labelLsoGrade, 7, 0);
+            tableLayoutPanel.Controls.Add(labelGrade, 5, 0);
             tableLayoutPanel.Dock = DockStyle.Fill;
             tableLayoutPanel.Location = new Point(3, 3);
             tableLayoutPanel.Name = "tableLayoutPanel";
@@ -101,13 +107,53 @@ namespace DCSDebriefForm
             tableLayoutPanel.Size = new Size(1176, 63);
             tableLayoutPanel.TabIndex = 1;
             // 
+            // labelWire
+            // 
+            labelWire.Dock = DockStyle.Fill;
+            labelWire.ForeColor = Color.Black;
+            labelWire.Location = new Point(1095, 1);
+            labelWire.Name = "labelWire";
+            labelWire.Size = new Size(74, 61);
+            labelWire.TabIndex = 5;
+            labelWire.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // labelUnitType
+            // 
+            labelUnitType.Dock = DockStyle.Fill;
+            labelUnitType.ForeColor = Color.Black;
+            labelUnitType.Location = new Point(381, 1);
+            labelUnitType.Name = "labelUnitType";
+            labelUnitType.Size = new Size(194, 61);
+            labelUnitType.TabIndex = 4;
+            labelUnitType.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // labelCarrier
+            // 
+            labelCarrier.Dock = DockStyle.Fill;
+            labelCarrier.ForeColor = Color.Black;
+            labelCarrier.Location = new Point(582, 1);
+            labelCarrier.Name = "labelCarrier";
+            labelCarrier.Size = new Size(244, 61);
+            labelCarrier.TabIndex = 3;
+            labelCarrier.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // labelPilot
+            // 
+            labelPilot.Dock = DockStyle.Fill;
+            labelPilot.ForeColor = Color.Black;
+            labelPilot.Location = new Point(180, 1);
+            labelPilot.Name = "labelPilot";
+            labelPilot.Size = new Size(194, 61);
+            labelPilot.TabIndex = 2;
+            labelPilot.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // labelDateTime
             // 
             labelDateTime.Dock = DockStyle.Fill;
             labelDateTime.ForeColor = Color.Black;
             labelDateTime.Location = new Point(4, 1);
             labelDateTime.Name = "labelDateTime";
-            labelDateTime.Size = new Size(114, 61);
+            labelDateTime.Size = new Size(169, 61);
             labelDateTime.TabIndex = 1;
             labelDateTime.TextAlign = ContentAlignment.MiddleLeft;
             // 
@@ -121,7 +167,7 @@ namespace DCSDebriefForm
             listView.Size = new Size(1176, 171);
             listView.TabIndex = 2;
             listView.UseCompatibleStateImageBehavior = false;
-            listView.View =System.Windows.Forms.View.Details;
+            listView.View = System.Windows.Forms.View.Details;
             // 
             // columnHeaderError
             // 
@@ -157,32 +203,12 @@ namespace DCSDebriefForm
             tableLayoutPanelMain.Size = new Size(1182, 246);
             tableLayoutPanelMain.TabIndex = 3;
             // 
-            // labelPilot
-            // 
-            labelPilot.Dock = DockStyle.Fill;
-            labelPilot.ForeColor = Color.Black;
-            labelPilot.Location = new Point(125, 1);
-            labelPilot.Name = "labelPilot";
-            labelPilot.Size = new Size(194, 61);
-            labelPilot.TabIndex = 2;
-            labelPilot.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // labelCarrier
-            // 
-            labelCarrier.Dock = DockStyle.Fill;
-            labelCarrier.ForeColor = Color.Black;
-            labelCarrier.Location = new Point(326, 1);
-            labelCarrier.Name = "labelCarrier";
-            labelCarrier.Size = new Size(194, 61);
-            labelCarrier.TabIndex = 3;
-            labelCarrier.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // LsoGradeItem2
+            // LsoGradeItem
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(tableLayoutPanelMain);
-            Name = "LsoGradeItem2";
+            Name = "LsoGradeItem";
             Size = new Size(1182, 246);
             tableLayoutPanel.ResumeLayout(false);
             tableLayoutPanelMain.ResumeLayout(false);
@@ -203,5 +229,7 @@ namespace DCSDebriefForm
         private ColumnHeader columnHeaderTranslation;
         private Label labelCarrier;
         private Label labelPilot;
+        private Label labelWire;
+        private Label labelUnitType;
     }
 }

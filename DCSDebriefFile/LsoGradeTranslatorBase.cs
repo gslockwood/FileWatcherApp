@@ -11,7 +11,8 @@ namespace DCSDebriefFile
         public delegate void RefreshEventHandler();
         public event RefreshEventHandler? Refresh;
 
-        protected IList<Grade> Grades = [];
+        protected LSOGradeAndErrors? lsoGradeAndErrors;
+        //protected IList<DataPair> Grades = [];
 
         protected readonly FileSystemEventWatcher? watcher;
         protected readonly string lsoGradeTableJson;
@@ -24,9 +25,9 @@ namespace DCSDebriefFile
 
             this.lsoGradeTableJson = lsoGradeTableJson;
 
-            Grades = GetGrades();
+            lsoGradeAndErrors = GetGrades();
 
-            FileInfo fileInfo = new FileInfo(lsoGradeTableJson);
+            FileInfo fileInfo = new(lsoGradeTableJson);
             if( string.IsNullOrEmpty(fileInfo.DirectoryName) ) throw new FileNotFoundException(fileInfo.DirectoryName);
 
             watcher = new FileSystemEventWatcher(fileInfo.DirectoryName, fileInfo.Name, null);
@@ -36,7 +37,7 @@ namespace DCSDebriefFile
             {
                 if( timeChecker.IsLessThanSecondsSinceLastExecution(5) ) return;
 
-                Grades = GetGrades();
+                lsoGradeAndErrors = GetGrades();
                 Refresh?.Invoke();
             };
             //watcher.FileCreated += OnFileCreated;
@@ -47,16 +48,38 @@ namespace DCSDebriefFile
             watcher.StartWatching();
         }
 
-        protected IList<Grade> GetGrades()
+
+        public class LSOGradeAndErrors
+        {
+            public IList<DataPair>? Grades { get; set; }
+            public IList<DataPair>? Errors { get; set; }
+        }
+
+        //public class Grade
+        //{
+        //    public string LSOGrade { get; set; }
+        //    public string Translation { get; set; }
+        //}
+
+        //public class Error
+        //{
+        //    public string LSOGrade { get; set; }
+        //    public string Translation { get; set; }
+        //}
+
+
+        //protected IList<DataPair> GetGrades()
+        protected LSOGradeAndErrors? GetGrades()
         {
             if( FileAccessChecker.IsFileAccessible(lsoGradeTableJson) )
             {
                 Logger.Log($"'{lsoGradeTableJson}' is currently accessible.");
                 string json = File.ReadAllText(lsoGradeTableJson);
-                IList<Grade>? list = System.Text.Json.JsonSerializer.Deserialize<IList<Grade>>(json);
-                if( list == null ) return [];
+                return System.Text.Json.JsonSerializer.Deserialize<LSOGradeAndErrors>(json);
 
-                return new List<Grade>(list);
+                //IList<DataPair>? list = System.Text.Json.JsonSerializer.Deserialize<IList<DataPair>>(json);
+                //if( list == null ) return [];
+                //return new List<DataPair>(list);
             }
 
             else
@@ -67,11 +90,15 @@ namespace DCSDebriefFile
 
                     try
                     {
-                        string json = File.ReadAllText(lsoGradeTableJson);
-                        IList<Grade>? list = System.Text.Json.JsonSerializer.Deserialize<IList<Grade>>(json);
-                        if( list == null ) return [];
+                        //string json = File.ReadAllText(lsoGradeTableJson);
+                        //IList<DataPair>? list = System.Text.Json.JsonSerializer.Deserialize<IList<DataPair>>(json);
+                        //if( list == null ) return [];
 
-                        return new List<Grade>(list);
+                        //return new List<DataPair>(list);
+
+                        string json = File.ReadAllText(lsoGradeTableJson);
+                        return System.Text.Json.JsonSerializer.Deserialize<LSOGradeAndErrors>(json);
+
                     }
                     catch( IOException ex )
                     {
@@ -95,14 +122,39 @@ namespace DCSDebriefFile
 
             }
 
-            return Grades;
+            return null;
 
         }
-        protected string? GetGrade(string score)
+        private string? GetGrade(string score)
         {
-            IEnumerable<Grade> found = Grades.Where(x => x.LSOGrade != null && x.LSOGrade.Contains(score));
+            if( lsoGradeAndErrors == null ) return "";
+            if( lsoGradeAndErrors.Grades == null ) return "";
+
+            IEnumerable<DataPair> found = this.lsoGradeAndErrors.Grades.Where(x => x.LSOGrade != null && x.LSOGrade.Contains(score));
             if( !found.Any() ) return null;
+
             return found.First().Translation;
+            //
+        }
+
+        private string? GetError(string score)
+        {
+            if( lsoGradeAndErrors == null ) return "";
+            if( lsoGradeAndErrors.Errors == null ) return "";
+
+            bool isSlightly = false;
+            bool isVery = false;
+
+            if( score.Contains('(') ) isSlightly = true;
+            if( score.Contains('_') ) isVery = true;
+
+            score = Regex.Replace(score, "[()_]", "");
+
+            IEnumerable<DataPair> found = this.lsoGradeAndErrors.Errors.Where(x => x.LSOGrade != null && x.LSOGrade.Contains(score));
+            if( !found.Any() ) return null;
+
+            return ( isSlightly ) ? $"Slightly {found.First().Translation}" : ( isVery ) ? $"Very {found.First().Translation}" : found.First().Translation;
+
         }
         public IList<LSOGradeError>? GetErrors(string errorStr)
         {
@@ -117,7 +169,7 @@ namespace DCSDebriefFile
             {
                 if( string.IsNullOrWhiteSpace(score) || score.Contains("WIRE") ) continue;
 
-                string? translation = GetGrade(score);
+                string? translation = GetError(score);
 
                 if( string.IsNullOrWhiteSpace(translation) )
                     translation = $"*** Unable to translate: {score} ***";
@@ -135,18 +187,20 @@ namespace DCSDebriefFile
             if( string.IsNullOrWhiteSpace(lsoGrade) )
                 throw new NullReferenceException("No grade provided.");
 
-            if( !Grades.Any() ) Grades = GetGrades();
+            lsoGradeAndErrors ??= GetGrades();
+            //if( !Grades.Any() ) Grades = GetGrades();
 
             return null;
 
         }
 
-        public string? Translate(string lsoGrade)
+        public string? GetGradeTranslation(string lsoGrade)
         {
             if( string.IsNullOrWhiteSpace(lsoGrade) )
                 return "No grade provided.";
 
-            if( !Grades.Any() ) Grades = GetGrades();
+            lsoGradeAndErrors ??= GetGrades();
+            //if( !Grades.Any() ) Grades = GetGrades();
 
             string? grade = GetGrade(lsoGrade);
 

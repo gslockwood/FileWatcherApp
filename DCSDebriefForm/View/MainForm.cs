@@ -18,14 +18,14 @@ namespace DCSDebriefForm
 
         readonly string lsoGradeTableFile;
         private readonly string? greenFlashSoftware;
-        Settings? settings;
+        readonly Settings? settings;
         private bool dirty;
 
         public MainForm()
         {
             InitializeComponent();
 
-            //TestGrades(); return;
+            //DCSDebriefFormTests.Tests.TestReadGrades(); return;
 
 
             greenFlashSoftware = Environment.GetEnvironmentVariable("GreenFlashSoftware");
@@ -63,7 +63,7 @@ namespace DCSDebriefForm
                 throw new FileNotFoundException($"The file '{dcsBriefingLog}' does not exist.");
 
 
-            FileInfo fileInfo = new FileInfo(dcsBriefingLog);
+            FileInfo fileInfo = new(dcsBriefingLog);
 
 
 
@@ -85,7 +85,6 @@ namespace DCSDebriefForm
             lsoGradeTableFile = $@"{dataFilePath}LSOGRADETABLE.json";
 
             readReader = new DCSDebriefFile.ReadReader(dcsBriefingLog, lsoGradeTableFile);//@".\LSOGRADETABLE.json"
-            //readReader.ReadCompleted += ProcessLSOList;
             readReader.ReadCompleted += (list) =>
             {
                 if( list == null || list.Count == 0 ) return;
@@ -122,6 +121,9 @@ namespace DCSDebriefForm
 
         protected override void OnLoad(EventArgs e)
         {
+            //return;
+
+
             base.OnLoad(e);
 
             if( settings == null ) throw new NullReferenceException(nameof(settings));
@@ -176,8 +178,11 @@ namespace DCSDebriefForm
                             {
                                 DateTime = lsoGrade.DateTime,
                                 Pilot = lsoGrade.Pilot,
+                                UnitType = lsoGrade.UnitType,
                                 Carrier = lsoGrade.Carrier,
-                                Grade = lsoGrade.Grade,
+                                //Grade = lsoGrade.Grade,
+                                Grade = $"{lsoGrade.Grade}: {readReader.GetGradeTranslation(lsoGrade.Grade)}",
+                                Wire = lsoGrade.WireCaught,
                                 LsoGrade = lsoGrade.ErrorStr,
                                 Errors = readReader.GetErrors(lsoGrade.ErrorStr)
                             };
@@ -211,10 +216,12 @@ namespace DCSDebriefForm
                                     LsoGradeItem item = new()
                                     {
                                         DateTime = startTime,
-                                        //DateTime = lsoStatement.DateTime,// this is not in the settings file json
+                                        //DateTime = lsoGrade.DateTime,// this is not in the settings file json
                                         Pilot = lsoGrade.Pilot,
+                                        UnitType = lsoGrade.UnitType,
                                         Carrier = lsoGrade.Carrier,
-                                        Grade = lsoGrade.Grade,
+                                        Grade = $"{lsoGrade.Grade}: {readReader.GetGradeTranslation(lsoGrade.Grade)}",
+                                        Wire = lsoGrade.WireCaught,
                                         LsoGrade = lsoGrade.ErrorStr,
                                         Errors = readReader.GetErrors(lsoGrade.ErrorStr)
 
@@ -294,11 +301,43 @@ namespace DCSDebriefFormTests
 {
     public static class Tests
     {
+        static DCSDebriefFile.ILsoGradeTranslator? lsoGradeTranslator;
+
+        public static void TestReadGrades()
+        {
+            string dcsBriefingLog = @"C:\Users\george s. lockwood\Saved Games\DCS\Logs\LSOGrades.csv";
+            string lsoGradeTableFile = @"C:\Users\george s. lockwood\OneDrive\GreenFlashSoftware\DCSDebriefing\LSOGRADETABLE.json";
+            ReadReader readReader = new(dcsBriefingLog, lsoGradeTableFile);
+            readReader.ReadCompleted += (list) =>
+            {
+                if( list == null || list.Count == 0 ) return;
+                Logger.Log("readReader.ReadCompleted with a list of grades");
+                if( list != null )
+                {
+                    // update the data member with new items
+                    foreach( LSOGrade lsoGrade in list )
+                    {
+                        var DateTime = lsoGrade.DateTime;
+                        var Pilot = lsoGrade.Pilot;
+                        var UnitType = lsoGrade.UnitType;
+                        var Carrier = lsoGrade.Carrier;
+                        //Grade = lsoGrade.Grade,
+                        var Grade = $"{lsoGrade.Grade}: {readReader.GetGradeTranslation(lsoGrade.Grade)}";
+                        var Wire = lsoGrade.WireCaught;
+                        var LsoGrade = lsoGrade.ErrorStr;
+                        var Errors = readReader.GetErrors(lsoGrade.ErrorStr);
+                    }
+                    //
+                }
+            };
+            readReader.ReadFile(dcsBriefingLog);
+
+        }
         public static void TestGrades()
         {
             string grade = "LSO: GRADE:C : (DLX)  _LULX_  _LULIM_  (DLIM)  _LULIC_  (DLIC)  (LLIW)  LRWDIW  3PTSIW  WIRE# 1 _EGIW_ ";
 
-            DCSDebriefFile.ILsoGradeTranslator lsoGradeTranslator;
+            //DCSDebriefFile.ILsoGradeTranslator lsoGradeTranslator;
 
             //lsoGradeTranslator = new DCSDebriefFile.LsoGradeTranslator(@".\LSOGRADETABLE.json");
             lsoGradeTranslator = new DCSDebriefFile.LsoGradeTranslatorLSOGradeFile(@".\LSOGRADETABLE.json");
@@ -309,7 +348,7 @@ namespace DCSDebriefFormTests
             if( statement != null )
             {
                 if( statement.Grade != null )
-                    Logger.Log($"{statement.Grade}\n{lsoGradeTranslator.Translate(statement.Grade)}");
+                    Logger.Log($"{statement.Grade}\n{lsoGradeTranslator.GetGradeTranslation(statement.Grade)}");
 
                 Logger.Log($"{grade}\n{statement}");
 

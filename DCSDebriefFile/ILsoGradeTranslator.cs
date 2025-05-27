@@ -7,7 +7,7 @@ namespace DCSDebriefFile
         event LsoGradeTranslator.RefreshEventHandler? Refresh;
 
         LSOGrade? GetLSOGrade(string lsoGrade);
-        string? Translate(string lsoGrade);
+        string? GetGradeTranslation(string lsoGrade);
 
         IList<LSOGradeError>? GetErrors(string errorStr);
         List<LSOGrade>? GetLSOGrades(string dcsBriefingLog);

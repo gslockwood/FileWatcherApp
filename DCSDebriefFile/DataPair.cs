@@ -1,6 +1,6 @@
 ﻿namespace DCSDebriefFileData
 {
-    public class Grade
+    public class DataPair
     {
         public string? LSOGrade { get; set; }
         public string? Translation { get; set; }

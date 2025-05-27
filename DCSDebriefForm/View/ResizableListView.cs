@@ -2,10 +2,67 @@
 {
     public class ResizableListView : ListView
     {
+        public ListViewItem Add(ListViewItem item)
+        {
+            // 1. Perform your custom logic before adding the item (if any)
+            //    For example, validation or additional processing.
+
+            // 2. Call the base ListView.Items.Add method to actually add the item
+            ListViewItem addedItem = base.Items.Add(item);
+
+            // 3. Perform your custom logic after adding the item
+            //    In this case, adjust the first column width.
+            AutoSizeFirstColumnToWidestContent();
+
+            return addedItem;
+        }
+
+        public void AddRange(ListViewItem[] items)
+        {
+            // 1. Perform custom logic before adding items
+
+            // 2. Call the base ListView.Items.AddRange method
+            base.Items.AddRange(items);
+
+            // 3. Perform custom logic after adding items
+            AutoSizeFirstColumnToWidestContent();
+        }
+
+        /// <summary>
+        /// Calculates and sets the width of the first column to accommodate its widest content.
+        /// </summary>
+        public void AutoSizeFirstColumnToWidestContent()
+        {
+            if( this.Columns.Count == 0 ) return;
+
+            int maxWidth = 0;
+            using( Graphics g = this.CreateGraphics() )
+            {
+                // Measure header text
+                maxWidth = TextRenderer.MeasureText(this.Columns[0].Text, this.Font).Width;
+
+                // Measure each item in the first column
+                foreach( ListViewItem item in this.Items )
+                {
+                    // We only care about the text of the main item, which is the first column's content.
+                    int itemWidth = TextRenderer.MeasureText(item.Text, this.Font).Width;
+                    if( itemWidth > maxWidth )
+                    {
+                        maxWidth = itemWidth;
+                    }
+                }
+            }
+            // Add a small buffer for padding
+            this.Columns[0].Width = maxWidth + 10; // Add some padding
+        }
+
+
         // Override the OnResize method to handle resizing logic
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+
+            AutoSizeFirstColumnToWidestContent();
 
             // Ensure the control is in Details view and has at least one column
             if( this.View == System.Windows.Forms.View.Details && Columns.Count > 0 )
@@ -15,6 +72,8 @@
                 for( int i = 0; i < Columns.Count - 1; i++ )
                 {
                     totalColumnWidth += Columns[i].Width;
+                    //ListViewItem item = this.Items[i];
+                    //var subItem = item.SubItems[0];
                 }
 
                 // Get the available width in the ListView's client area

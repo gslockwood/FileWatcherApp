@@ -20,8 +20,7 @@ namespace DCSDebriefForm
         }
         private void GradeListView_MouseClick(object? sender, MouseEventArgs e)
         {
-            ListView? lv = sender as ListView;
-            if( lv == null ) return;
+            if( sender is not ListView lv ) return;
 
             // Perform a hit test to get information about what was clicked
             ListViewHitTestInfo hitTestInfo = lv.HitTest(e.Location);
@@ -81,38 +80,16 @@ namespace DCSDebriefForm
 
                 labelGrade.Text = value;
 
-                switch( value )
+                string grade = value.Split(':')[0].Trim();
+
+                panelGradeIndicator.BackColor = grade switch
                 {
-                    case "OK":
-                        panelGradeIndicator.BackColor = Color.Green;
-                        break;
-
-                    case "WO":
-                    case "C":
-                    case "CP":
-                    case "UNK":
-                    case "---":
-                        panelGradeIndicator.BackColor = Color.Red;
-                        break;
-
-                    case "B":
-                        panelGradeIndicator.BackColor = Color.LightYellow;
-                        break;
-
-                    default:
-                        panelGradeIndicator.BackColor = Color.Yellow;
-                        break;
-                }
-
-                //if( value.Equals("OK") )
-                //    panelGradeIndicator.BackColor = Color.Green;
-                //else if( value.Equals("No Grade") )
-                //    panelGradeIndicator.BackColor = Color.Black;
-
-                //else if( value.Equals("Fail") )
-                //    panelGradeIndicator.BackColor = Color.Red;
-
-                //panelGradeIndicator.BackColor = Color.Yellow;
+                    "_OK_" or "OK" => Color.Green,
+                    "WO" => Color.Black,
+                    "C" or "CP" or "UNK" or "---" => Color.Red,
+                    "B" => Color.LightYellow,
+                    _ => Color.Yellow,
+                };
 
             }
         }
@@ -120,6 +97,11 @@ namespace DCSDebriefForm
         public string Pilot
         {
             set { labelPilot.Text = value; }
+        }
+
+        public string UnitType
+        {
+            set { labelUnitType.Text = value; }
         }
 
         public string Carrier
@@ -130,6 +112,11 @@ namespace DCSDebriefForm
         {
             //get { return lsoGradeLabel.Text; }
             set { labelLsoGrade.Text = value; }
+        }
+
+        public string Wire
+        {
+            set { labelWire.Text = value; }
         }
 
         public string Translation
@@ -148,7 +135,9 @@ namespace DCSDebriefForm
                 {
                     ListViewItem item = new(lsoGradeItem.Error);
                     item.SubItems.Add(lsoGradeItem.Translation);
-                    listView.Items.Add(item);
+                    //listView.Items.Add(item);
+                    listView.Add(item);
+
                 }
 
             }

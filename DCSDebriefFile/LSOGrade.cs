@@ -15,6 +15,7 @@ namespace DCSDebriefFile
 
         public string WireCaught { get; set; } = "UNK";
         public string Pilot { get; set; } = "UNK";
+        public string UnitType { get; set; } = "UNK";
         public string Carrier { get; set; } = "UNK";
 
         // for serialization
@@ -27,7 +28,8 @@ namespace DCSDebriefFile
             if( wireCaught.Equals("UNK") )
                 WireCaught = wireCaught;
             else
-                WireCaught = $"Wire # {wireCaught} caught";
+                WireCaught = $"Wire# {wireCaught}";
+            //WireCaught = $"Wire # {wireCaught} caught";
         }
 
         public class LSOGradeError
@@ -54,9 +56,10 @@ namespace DCSDebriefFile
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             if( this.Pilot != null ) sb.AppendLine(Pilot);
+            if( this.UnitType != null ) sb.AppendLine(UnitType);
             if( this.Carrier != null ) sb.AppendLine(Carrier);
             sb.AppendLine(this.DateTime.ToString("G"));
 

@@ -9,12 +9,18 @@ namespace DCSDebriefFile
     {
         public LsoGradeTranslatorLSOGradeFile(string lsoGradeTableJson) : base(lsoGradeTableJson) { }
 
+        const short eventIdIndex = 1;
+        const short pilotIndex = 2;
+        const short unitTypeIndex = 3;
+        const short carrierIndex = 4;
+        const short lsoGradeIndex = 5;
+
         public override LSOGrade? GetLSOGrade(string lsoGrade)
         {
             base.GetLSOGrade(lsoGrade);
 
             //again:
-            lsoGrade = lsoGrade.ToUpper().Replace("_", " ").Replace("(", " ").Replace(")", " ");
+            //lsoGrade = lsoGrade.ToUpper().Replace("_", " ").Replace("(", " ").Replace(")", " ");
 
             lsoGrade = lsoGrade.Replace(" #", "#").Replace("# ", "#");
 
@@ -31,35 +37,40 @@ namespace DCSDebriefFile
 
             //again:
             var array = lsoGrade.Split(',');
-            if( array.Length == 5 )
+            if( array.Length == 6 )
             {
                 //LSOStatement lsoStatement = new(grade, details, lsoGradeItemList, wireNumber);
-                LSOGrade lsoStatement = new();
+                LSOGrade lSOGrade = new();
 
                 string format = "yyyy-MM-dd HH:mm:ss";
-                DateTime dateTime; if( DateTime.TryParseExact(array[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime) )
-                    lsoStatement.DateTime = dateTime;
+                if( DateTime.TryParseExact(array[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime) )
+                    lSOGrade.DateTime = dateTime;
                 else
-                    lsoStatement.DateTime = DateTime.Now;
+                    lSOGrade.DateTime = DateTime.Now;
 
-                var eventId = array[1];
-                lsoStatement.Pilot = array[2];
-                lsoStatement.Carrier = array[3];
+                //var eventId = array[eventIdIndex];
+                lSOGrade.Pilot = array[pilotIndex];
+                lSOGrade.UnitType = array[unitTypeIndex];
+                lSOGrade.Carrier = array[4];
 
                 if( wireNumber.Equals("UNK") )
-                    lsoStatement.WireCaught = wireNumber;
+                    lSOGrade.WireCaught = wireNumber;
                 else
-                    lsoStatement.WireCaught = $"Wire # {wireNumber} caught";
+                    lSOGrade.WireCaught = $"Wire# {wireNumber}";
+                //lSOGrade.WireCaught = $"Wire # {wireNumber} caught";
 
 
-                lsoGrade = array[4];
+                lsoGrade = array[lsoGradeIndex];
 
-                pattern = @"GRADE\s*?:\s*?([A-Z]{1,2}|[-]{3})\s*?(.*)";
+                //agag:
+                //pattern = @"GRADE\s*?:\s*?([A-Z]{1,2}|[-]{3})\s*?(.*)";
+
+                pattern = @"GRADE\s*?:\s*?([_]?[A-Z]{1,2}[_]?|[-]{3})\s*?(.*)";
 
                 match = Regex.Match(lsoGrade, pattern);
                 if( match.Success )
                 {
-                    lsoStatement.Grade = match.Groups[1].Value.Trim();  // Extracts the Grade (e.g., "C")
+                    lSOGrade.Grade = match.Groups[1].Value.Trim();  // Extracts the Grade (e.g., "C")
 
                     string details = match.Groups[2].Value; // Extracts the remaining part
 
@@ -68,14 +79,16 @@ namespace DCSDebriefFile
                     details = details.Replace(':', ' ').Trim();
                     details = Regex.Replace(details, @"\s+", " ");
 
-                    lsoStatement.ErrorStr = details;
+                    lSOGrade.ErrorStr = details;
 
                     IList<LSOGradeError>? lsoGradeItemList = GetErrors(details);
 
-                    lsoStatement.Errors = lsoGradeItemList;
+                    lSOGrade.Errors = lsoGradeItemList;
 
-                    return lsoStatement;
+                    return lSOGrade;
                 }
+
+                //goto agag;
 
             }
 

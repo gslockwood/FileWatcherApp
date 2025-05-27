@@ -140,9 +140,9 @@ namespace DCSDebriefFile
 
                 //IList<LSOGradeError>? lsoGradeItemList = GetErrors(details);
 
-                LSOGrade lsoStatement = new(grade, details, GetErrors(details), wireNumber);
+                LSOGrade lSOGrade = new(grade, details, GetErrors(details), wireNumber);
 
-                return lsoStatement;
+                return lSOGrade;
 
             }
 
@@ -176,16 +176,16 @@ namespace DCSDebriefFile
 
                     if( place.Comment != null )
                     {
-                        LSOGrade? lSOStatement = this.GetLSOGrade(place.Comment);
-                        if( lSOStatement != null )
+                        LSOGrade? lSOGrade = this.GetLSOGrade(place.Comment);
+                        if( lSOGrade != null )
                         {
-                            lSOStatement.DateTime = startTime;
+                            lSOGrade.DateTime = startTime;
                             if( place.place != null )
-                                lSOStatement.Carrier = place.place;
+                                lSOGrade.Carrier = place.place;
                             if( place.initiatorPilotName != null )
-                                lSOStatement.Pilot = place.initiatorPilotName;
+                                lSOGrade.Pilot = place.initiatorPilotName;
 
-                            lsoGradesInfo.Add(lSOStatement);
+                            lsoGradesInfo.Add(lSOGrade);
                         }
                     }
 

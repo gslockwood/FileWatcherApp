@@ -47,15 +47,15 @@
 
         }
 
-        public string? GeTTranslation(string grade)
+        public string? GetGradeTranslation(string grade)
         {
-            return lsoGradeTranslator.Translate(grade);
+            return lsoGradeTranslator.GetGradeTranslation(grade);
         }
 
-        public LSOGrade? GetLSOGrade(string grade)
-        {
-            return lsoGradeTranslator.GetLSOGrade(grade);
-        }
+        //public LSOGrade? GetLSOGrade(string grade)
+        //{
+        //    return lsoGradeTranslator.GetLSOGrade(grade);
+        //}
 
         public void Dispose()
         {
