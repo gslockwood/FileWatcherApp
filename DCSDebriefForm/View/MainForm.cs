@@ -27,7 +27,6 @@ namespace DCSDebriefForm
 
             //DCSDebriefFormTests.Tests.TestReadGrades(); return;
 
-
             greenFlashSoftware = Environment.GetEnvironmentVariable("GreenFlashSoftware");
             string dataFilePath = greenFlashSoftware + "\\DCSDebriefing\\";
 
@@ -49,8 +48,14 @@ namespace DCSDebriefForm
 
             data = new SortedDictionary<DateTime, LSOGrade>(data, Comparer<DateTime>.Create((d1, d2) => d2.CompareTo(d1)));
 
+            IDictionary<DateTime, LSOGrade>? entries;
+            if( data.Count < 10 )
+                entries = data;
+            else
+                entries = data.Take(10).ToDictionary(entry => entry.Key, entry => entry.Value);
+
             if( settings == null ) throw new NullReferenceException(nameof(settings));
-            settings.Data = data;
+            settings.Data = entries;
 
 
             //string dcsBriefingLog = @"C:\Users\george s. lockwood\Saved Games\DCS\Missions\FA-18C\F18 Case Recoveries\debriefing.log";
@@ -182,7 +187,7 @@ namespace DCSDebriefForm
                                 Carrier = lsoGrade.Carrier,
                                 //Grade = lsoGrade.Grade,
                                 Grade = $"{lsoGrade.Grade}: {readReader.GetGradeTranslation(lsoGrade.Grade)}",
-                                Wire = lsoGrade.WireCaught,
+                                Wire = lsoGrade.Wire,
                                 LsoGrade = lsoGrade.ErrorStr,
                                 Errors = readReader.GetErrors(lsoGrade.ErrorStr)
                             };
@@ -221,7 +226,7 @@ namespace DCSDebriefForm
                                         UnitType = lsoGrade.UnitType,
                                         Carrier = lsoGrade.Carrier,
                                         Grade = $"{lsoGrade.Grade}: {readReader.GetGradeTranslation(lsoGrade.Grade)}",
-                                        Wire = lsoGrade.WireCaught,
+                                        Wire = lsoGrade.Wire,
                                         LsoGrade = lsoGrade.ErrorStr,
                                         Errors = readReader.GetErrors(lsoGrade.ErrorStr)
 
@@ -241,6 +246,7 @@ namespace DCSDebriefForm
                     }
 
                     lsoGradeListBox.ResumeLayout();
+                    lsoGradeListBox.AutoScrollPosition = new Point(0, 0);
                     //
                 }
 
@@ -323,7 +329,7 @@ namespace DCSDebriefFormTests
                         var Carrier = lsoGrade.Carrier;
                         //Grade = lsoGrade.Grade,
                         var Grade = $"{lsoGrade.Grade}: {readReader.GetGradeTranslation(lsoGrade.Grade)}";
-                        var Wire = lsoGrade.WireCaught;
+                        var Wire = lsoGrade.Wire;
                         var LsoGrade = lsoGrade.ErrorStr;
                         var Errors = readReader.GetErrors(lsoGrade.ErrorStr);
                     }

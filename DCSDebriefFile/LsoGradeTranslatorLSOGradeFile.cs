@@ -5,10 +5,8 @@ using static DCSDebriefFile.LSOGrade;
 
 namespace DCSDebriefFile
 {
-    public class LsoGradeTranslatorLSOGradeFile : LsoGradeTranslatorBase
+    public class LsoGradeTranslatorLSOGradeFile(string lsoGradeTableJson) : LsoGradeTranslatorBase(lsoGradeTableJson)
     {
-        public LsoGradeTranslatorLSOGradeFile(string lsoGradeTableJson) : base(lsoGradeTableJson) { }
-
         const short eventIdIndex = 1;
         const short pilotIndex = 2;
         const short unitTypeIndex = 3;
@@ -24,14 +22,20 @@ namespace DCSDebriefFile
 
             lsoGrade = lsoGrade.Replace(" #", "#").Replace("# ", "#");
 
-            string wireNumber = "UNK";
+            short wire = 0;
+            //string wireNumber = "UNK";
             //string? grade;
 
             string pattern = @"WIRE#\s*(\d+)";
             Match match = Regex.Match(lsoGrade, pattern);
             if( match.Success )
             {
-                wireNumber = match.Groups[1].Value;  // Extracts the wire number
+                //wireNumber = match.Groups[1].Value;  // Extracts the wire number
+                string wireNumber = match.Groups[1].Value;  // Extracts the wire number
+
+                if( short.TryParse(wireNumber, out short wireTemp) )
+                    wire = wireTemp;
+
                 lsoGrade = Regex.Replace(lsoGrade, pattern, "").Trim(); // Removes the wire segment
             }
 
@@ -53,11 +57,12 @@ namespace DCSDebriefFile
                 lSOGrade.UnitType = array[unitTypeIndex];
                 lSOGrade.Carrier = array[4];
 
-                if( wireNumber.Equals("UNK") )
-                    lSOGrade.WireCaught = wireNumber;
-                else
-                    lSOGrade.WireCaught = $"Wire# {wireNumber}";
-                //lSOGrade.WireCaught = $"Wire # {wireNumber} caught";
+                lSOGrade.Wire = wire;
+                //if( wireNumber.Equals("UNK") )
+                //    lSOGrade.WireCaught = wireNumber;
+                //else
+                //    lSOGrade.WireCaught = $"Wire# {wireNumber}";
+                ////lSOGrade.WireCaught = $"Wire # {wireNumber} caught";
 
 
                 lsoGrade = array[lsoGradeIndex];

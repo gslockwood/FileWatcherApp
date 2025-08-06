@@ -13,34 +13,31 @@ namespace DCSDebriefFile
         [System.Text.Json.Serialization.JsonIgnore]
         public IList<LSOGradeError>? Errors { get; set; }
 
-        public string WireCaught { get; set; } = "UNK";
+        public short Wire { get; set; } = 0;
         public string Pilot { get; set; } = "UNK";
         public string UnitType { get; set; } = "UNK";
         public string Carrier { get; set; } = "UNK";
 
         // for serialization
         public LSOGrade() { }
-        public LSOGrade(string grade, string errorStr, IList<LSOGradeError>? errors, string wireCaught)
+        public LSOGrade(string grade, string errorStr, IList<LSOGradeError>? errors, short wire)
         {
             Grade = grade;
             ErrorStr = errorStr;
             Errors = errors;
-            if( wireCaught.Equals("UNK") )
-                WireCaught = wireCaught;
-            else
-                WireCaught = $"Wire# {wireCaught}";
-            //WireCaught = $"Wire # {wireCaught} caught";
+            Wire = wire;
+
+            //if( wireCaught.Equals("UNK") )
+            //    WireCaught = wire;
+            //else
+            //    WireCaught = $"Wire# {wireCaught}";
+            ////WireCaught = $"Wire # {wireCaught} caught";
         }
 
-        public class LSOGradeError
+        public class LSOGradeError(string error, string? translation)
         {
-            public string? Error { get; }
-            public string? Translation { get; }
-            public LSOGradeError(string error, string? translation)
-            {
-                Error = error;
-                Translation = translation;
-            }
+            public string? Error { get; } = error;
+            public string? Translation { get; } = translation;
 
             public override string ToString()
             {
@@ -65,7 +62,8 @@ namespace DCSDebriefFile
 
             if( this.Grade != null ) sb.AppendLine(Grade);
             if( this.ErrorStr != null ) sb.AppendLine(ErrorStr);
-            if( this.WireCaught != null ) sb.AppendLine(WireCaught);
+            //if( this.WireCaught != null ) sb.AppendLine(WireCaught);
+            sb.AppendLine($"Wire#{Wire.ToString()}");
             if( this.Errors != null )
             {
                 foreach( LSOGradeError error in Errors )

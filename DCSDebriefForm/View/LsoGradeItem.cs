@@ -114,9 +114,13 @@ namespace DCSDebriefForm
             set { labelLsoGrade.Text = value; }
         }
 
-        public string Wire
+        public short Wire
         {
-            set { labelWire.Text = value; }
+            set
+            {
+                if( value == 0 ) labelWire.Text = null;
+                else labelWire.Text = $"{value}";
+            }
         }
 
         public string Translation

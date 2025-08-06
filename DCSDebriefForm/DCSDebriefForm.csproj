@@ -6,11 +6,16 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <ApplicationIcon>DCSDebriefForm.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="CustomListBox.resx1111" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DCSDebriefForm.ico" />
   </ItemGroup>
 
   <ItemGroup>

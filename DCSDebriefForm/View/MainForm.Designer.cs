@@ -43,17 +43,20 @@ namespace DCSDebriefForm
         /// </summary>
         private void InitializeComponent()
         {
-            //lsoGradeListBox = new LsoGradeListBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             lsoGradeListBox = new FlowLayoutPanelEx();
             SuspendLayout();
             // 
             // lsoGradeListBox
             // 
+            lsoGradeListBox.AutoScroll = true;
             lsoGradeListBox.Dock = DockStyle.Fill;
+            lsoGradeListBox.FlowDirection = FlowDirection.TopDown;
             lsoGradeListBox.Location = new Point(0, 0);
             lsoGradeListBox.Name = "lsoGradeListBox";
-            lsoGradeListBox.Size = new Size(1687, 754);
+            lsoGradeListBox.Size = new Size(1687, 804);
             lsoGradeListBox.TabIndex = 0;
+            lsoGradeListBox.WrapContents = false;
             // 
             // MainForm
             // 
@@ -63,6 +66,7 @@ namespace DCSDebriefForm
             Controls.Add(lsoGradeListBox);
             DoubleBuffered = true;
             Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);
             Name = "MainForm";
             Text = "DCS World LSO Grades";

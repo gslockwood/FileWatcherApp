@@ -116,14 +116,14 @@
                 if( lastColumnWidth > 0 )
                 {
                     // Set the width of the last column
-                    Columns[Columns.Count - 1].Width = lastColumnWidth;
+                    Columns[^1].Width = lastColumnWidth;
                 }
                 else
                 {
                     // If the calculated width is not positive,
                     // set the last column width to a minimum or 0,
                     // and let the horizontal scrollbar handle it.
-                    Columns[Columns.Count - 1].Width = 0; // Or a small minimum width
+                    Columns[^1].Width = 0; // Or a small minimum width
                 }
             }
         }

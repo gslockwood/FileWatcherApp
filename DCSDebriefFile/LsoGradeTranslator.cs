@@ -111,14 +111,19 @@ namespace DCSDebriefFile
 
             lsoGrade = lsoGrade.Replace(" #", "#").Replace("# ", "#");
 
-            string wireNumber = "UNK";
+            //string wireNumber = "UNK";
+            short wire = 0;
             string? grade;
 
             string pattern = @"WIRE#\s*(\d+)";
             Match match = Regex.Match(lsoGrade, pattern);
             if( match.Success )
             {
-                wireNumber = match.Groups[1].Value;  // Extracts the wire number
+                string wireNumber = match.Groups[1].Value;  // Extracts the wire number
+
+                if( short.TryParse(wireNumber, out short wireTemp) )
+                    wire = wireTemp;
+
                 lsoGrade = Regex.Replace(lsoGrade, pattern, "").Trim(); // Removes the wire segment
             }
 
@@ -140,7 +145,7 @@ namespace DCSDebriefFile
 
                 //IList<LSOGradeError>? lsoGradeItemList = GetErrors(details);
 
-                LSOGrade lSOGrade = new(grade, details, GetErrors(details), wireNumber);
+                LSOGrade lSOGrade = new(grade, details, GetErrors(details), wire);
 
                 return lSOGrade;
 
